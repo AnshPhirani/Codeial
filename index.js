@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const port = 8000;
-require("./config/mongoose");
+const db = require("./config/mongoose");
 const cookieParser = require("cookie-parser");
 
 // used for session cookie
@@ -9,15 +9,18 @@ const session = require("express-session");
 const passport = require("passport");
 const passportLocal = require("./config/passport_local_strategy");
 
+const MongoStore = require("connect-mongo");
+
 // for reading through post request (i.e form data)
 app.use(express.urlencoded());
-
 app.use(cookieParser());
+app.use(express.static("./assets"));
 
 // setup for the View engine
 app.set("view engine", "ejs");
 app.set("views", "./views");
 
+// mongoStore is use to store the session cookie in the db
 app.use(
   session({
     name: "codeial",
@@ -28,6 +31,13 @@ app.use(
     cookie: {
       maxAge: 1000 * 60 * 100,
     },
+    store: MongoStore.create(
+      {
+        client: db.getClient(),
+        autoRemove: "disabled",
+      },
+      (err) => console.log(err || "connect-mongo's setup working")
+    ),
   })
 );
 

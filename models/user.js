@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 
+// document
 const userSchema = new mongoose.Schema(
   {
     email: {
@@ -19,5 +20,5 @@ const userSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const User = mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema); // creating collection
 module.exports = User;
